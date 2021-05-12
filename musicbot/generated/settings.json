@@ -1,0 +1,18 @@
+{
+    "417273073306435584": {
+        "id": 417273073306435584,
+        "command_channel": null,
+        "start_voice_channel": 695633869042614343,
+        "user_must_be_in_vc": true,
+        "button_emote": "",
+        "default_volume": 100
+    },
+    "688694762676814047": {
+        "id": 688694762676814047,
+        "command_channel": null,
+        "start_voice_channel": 688694762681008181,
+        "user_must_be_in_vc": true,
+        "button_emote": "",
+        "default_volume": 50
+    }
+}

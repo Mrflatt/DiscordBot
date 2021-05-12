@@ -280,3 +280,4 @@ cython_debug/
 
 *.idea
 
+/musicbot/generated

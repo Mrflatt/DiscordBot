@@ -23,10 +23,6 @@ class Weather(commands.Cog):
     def __init__(self, stonks):
         self.stonks = stonks
 
-    # @commands.Cog.listener()
-    # async def on_ready(self):
-        # self.stonks.loop.create_task(self.weather_today())
-
     @command(name="weather", help="Weather info")
     async def get_weather(self, ctx, city: str):
         emb = weather_query(city)

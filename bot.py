@@ -23,7 +23,7 @@ handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(me
 logger.addHandler(handler)
 
 
-stonks = commands.Bot(command_prefix="-", description="Hackerman", intents=intents, owner_id=298520779191222273, case_insensitive=True)
+stonks = commands.Bot(command_prefix="-", description="Hackerman", intents=intents, owner_id=os.environ.get('OWNER'), case_insensitive=True)
 
 nav = Navigation(":discord:743511195197374563", "\:arrow_left:", "\:arrow_right")
 stonks.help_command = PrettyHelp()
@@ -83,13 +83,12 @@ async def on_ready():
 
 @stonks.event  # When bots joins a server, default prefix is ".", saves it to json
 async def on_guild_join(guild):
-    mongodb.set_prefix_join(guild.id, "$")
     await register(guild)
 
 
 @stonks.event  # When bots leaves a server, default prefix is removed from json
 async def on_guild_remove(guild):
-    mongodb.delete_prefix(guild.id)
+    await register(guild)
 
 
 @stonks.command(hidden=True)  # Loads on extension

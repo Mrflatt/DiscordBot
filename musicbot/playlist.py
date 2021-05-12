@@ -2,7 +2,6 @@ from collections import deque
 import random
 
 
-
 class Playlist:
     """Stores the youtube links of songs to be played and already played and offers basic operation on the queues"""
 

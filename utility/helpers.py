@@ -12,7 +12,7 @@ secret = os.environ.get('REDDIT_SECRET')
 password = os.environ.get('REDDIT_PASSWORD')
 
 
-def reddit_memes(subreddit_id):  # query to get reddit post from specific subreddit (UPDATE)
+def reddit_memes(subreddit_id):
     reddit = praw.Reddit(client_id=user_id,
                          client_secret=secret,
                          user_agent='windows.com.bot.myredditbot:v1')
@@ -21,9 +21,6 @@ def reddit_memes(subreddit_id):  # query to get reddit post from specific subred
     random_sub = ''
     for i in range(top):
         random_sub = next(x for x in submission if not x.stickied)
-    # name = random_sub.title
-    # em = discord.Embed(title=name, color=discord.Color.gold())
-    # em.set_image(url=random_sub.url)
     return random_sub.url
 
 

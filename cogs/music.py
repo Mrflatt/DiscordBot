@@ -26,7 +26,7 @@ class Music(commands.Cog):
         current_guild = utils.get_guild(self.stonks, ctx.message)
         audiocontroller = utils.guild_to_audiocontroller[current_guild]
 
-        if audiocontroller.playlist.loop == True:
+        if audiocontroller.playlist.loop:
             await ctx.send(f"Loop is enabled! Use {''} loop to disable.")
             return
 

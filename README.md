@@ -1,4 +1,4 @@
 # DiscordBot
 
-Discord bot for personal use\n
+Discord bot for personal use
 Feel free to use!

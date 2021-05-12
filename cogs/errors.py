@@ -12,7 +12,7 @@ class Errors(commands.Cog):
     async def on_command_error(self, ctx: commands.Context, error: commands.CommandError):
         default_error = (commands.NotOwner, commands.TooManyArguments, commands.MaxConcurrencyReached)
         if isinstance(error, default_error):
-            message = f"Error has occurred {error}"
+            message = f"Error has occurred: {error}"
         elif isinstance(error, commands.CommandNotFound):
             message = "Not valid command!"
         elif isinstance(error, commands.MissingRequiredArgument):
@@ -22,7 +22,7 @@ class Errors(commands.Cog):
         elif isinstance(error, commands.DisabledCommand):
             message = f"{ctx.command} has been disabled!"
         else:
-            message = f"Something went wrong! {error}"
+            message = f"Something went wrong! \"{error}\""
 
         await ctx.send(message, delete_after=30)
 

@@ -24,13 +24,13 @@ class Music(commands.Cog):
             return
 
         current_guild = utils.get_guild(self.stonks, ctx.message)
-        audiocontroller = utils.guild_to_audiocontroller[current_guild]
+        audio_controller = utils.guild_to_audiocontroller[current_guild]
 
-        if audiocontroller.playlist.loop:
+        if audio_controller.playlist.loop:
             await ctx.send(f"Loop is enabled! Use {''} loop to disable.")
             return
 
-        song = await audiocontroller.process_song(track)
+        song = await audio_controller.process_song(track)
 
         if song is None:
             await ctx.send("Unknown site :question:")
@@ -38,7 +38,7 @@ class Music(commands.Cog):
 
         if song.origin == linkutils.Origins.Default:
 
-            if audiocontroller.current_song is not None and len(audiocontroller.playlist.playque) == 0:
+            if audio_controller.current_song is not None and len(audio_controller.playlist.playque) == 0:
                 await ctx.send(embed=song.info.format_output("Now Playing."))
             else:
                 await ctx.send(embed=song.info.format_output("Added to queue."))
@@ -50,26 +50,26 @@ class Music(commands.Cog):
     async def _loop(self, ctx):
 
         current_guild = utils.get_guild(self.stonks, ctx.message)
-        audiocontroller = utils.guild_to_audiocontroller[current_guild]
+        audio_controller = utils.guild_to_audiocontroller[current_guild]
 
         if await utils.play_check(ctx) is False:
             return
 
-        if len(audiocontroller.playlist.playque) < 1:
+        if len(audio_controller.playlist.playque) < 1:
             await ctx.send("No songs in queue!")
             return
 
-        if audiocontroller.playlist.loop is False:
-            audiocontroller.playlist.loop = True
+        if audio_controller.playlist.loop is False:
+            audio_controller.playlist.loop = True
             await ctx.send("Loop enabled :arrows_counterclockwise:")
         else:
-            audiocontroller.playlist.loop = False
+            audio_controller.playlist.loop = False
             await ctx.send("Loop disabled :x:")
 
     @commands.command(name='shuffle', help="Shuffle the queue.", aliases=["sh"])
     async def _shuffle(self, ctx):
         current_guild = utils.get_guild(self.stonks, ctx.message)
-        audiocontroller = utils.guild_to_audiocontroller[current_guild]
+        audio_controller = utils.guild_to_audiocontroller[current_guild]
 
         if await utils.play_check(ctx) is False:
             return
@@ -81,11 +81,11 @@ class Music(commands.Cog):
             await ctx.send("Queue is empty :x:")
             return
 
-        audiocontroller.playlist.shuffle()
+        audio_controller.playlist.shuffle()
         await ctx.send("Shuffled queue :twisted_rightwards_arrows:")
 
-        for song in list(audiocontroller.playlist.playque)[:5]:
-            asyncio.ensure_future(audiocontroller.preload(song))
+        for song in list(audio_controller.playlist.playque)[:5]:
+            asyncio.ensure_future(audio_controller.preload(song))
 
     @commands.command(name='pause', help="Pause the song.")
     async def _pause(self, ctx):

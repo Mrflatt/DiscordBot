@@ -1,4 +1,3 @@
-
 # A dictionary that remembers which guild belongs to which audiocontroller
 guild_to_audiocontroller = {}
 
@@ -52,7 +51,7 @@ async def play_check(ctx):
     cm_channel = sett.get('command_channel')
     vc_rule = sett.get('user_must_be_in_vc')
 
-    if cm_channel != None:
+    if cm_channel is not None:
         if cm_channel != ctx.message.channel.id:
             await ctx.send("Please use configured command channel.")
             return False
@@ -60,7 +59,7 @@ async def play_check(ctx):
     if vc_rule:
         author_voice = ctx.message.author.voice
         bot_vc = ctx.guild.voice_client.channel
-        if author_voice == None:
+        if author_voice is None:
             await ctx.send("Please join the voice channel to use commands.")
             return False
         elif ctx.message.author.voice.channel != bot_vc:

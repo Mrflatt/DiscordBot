@@ -13,6 +13,7 @@ from cogs.general import General
 load_dotenv()
 TOKEN = os.environ.get('TOKEN')
 GUILD = os.environ.get('GUILD')
+OWNER = os.environ.get('OWNER')
 intents = Intents.all()
 stonks_auto_join = False
 
@@ -23,7 +24,7 @@ handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(me
 logger.addHandler(handler)
 
 
-stonks = commands.Bot(command_prefix="-", description="Hackerman", intents=intents, owner_id=os.environ.get('OWNER'), case_insensitive=True)
+stonks = commands.Bot(command_prefix="-", description="Hackerman", intents=intents, owner_id=int(OWNER), case_insensitive=True)
 
 nav = Navigation(":discord:743511195197374563", "\:arrow_left:", "\:arrow_right")
 stonks.help_command = PrettyHelp()

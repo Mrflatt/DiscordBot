@@ -1,4 +1,5 @@
 import discord
+import json
 from discord.ext import commands
 from discord.ext.commands import command
 
@@ -62,11 +63,15 @@ class Mod(commands.Cog):
         await member.edit(nick=nick)
         await ctx.send(f"Nickname was changed to {member.mention}!")
 
-    @command(name='setprefix', help="Set servers prefix for commands")
+    @command(name='setprefix', help="Set servers prefix for commands", aliases=["changeprefix"])
     @commands.has_permissions(administrator=True)
     async def set_prefix(self, ctx, prefix):
-        # mongodb.set_prefix(ctx.guild.id, prefix)
-        await ctx.send(f'Successfully changes the prefix to: {prefix}')
+        with open('prefixes.json', 'r') as f:
+            prefixes = json.load(f)
+        prefixes[str(ctx.guild.id)] = prefix
+        with open('prefixes.json', 'w') as f:
+            json.dump(prefixes, f, indent=4)
+        await ctx.send(f"Successfully changed the prefix to: {prefix}")
 
 
 def setup(stonks):

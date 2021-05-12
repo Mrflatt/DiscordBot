@@ -1,3 +1,4 @@
+import json
 import os
 import discord
 import logging
@@ -24,7 +25,13 @@ handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(me
 logger.addHandler(handler)
 
 
-stonks = commands.Bot(command_prefix="-", description="Hackerman", intents=intents, owner_id=int(OWNER), case_insensitive=True)
+def get_prefix(client, message):
+    with open('prefixes.json', 'r') as f:
+        prefixes = json.load(f)
+        return prefixes[str(message.guild.id)]
+
+
+stonks = commands.Bot(command_prefix=get_prefix, description="Hackerman", intents=intents, owner_id=int(OWNER), case_insensitive=True)
 
 nav = Navigation(":discord:743511195197374563", "\:arrow_left:", "\:arrow_right")
 stonks.help_command = PrettyHelp()
@@ -79,17 +86,26 @@ async def on_ready():
     print(f"{stonks.user.name} is ready!")
     for guild in stonks.guilds:
         await register(guild)
+    await stonks.change_presence(activity=discord.Game("discord API"))
     print("Startup done!")
 
 
 @stonks.event  # When bots joins a server, default prefix is ".", saves it to json
 async def on_guild_join(guild):
-    await register(guild)
+    with open("prefixes.json", "r") as f:
+        prefixes = json.load(f)
+    prefixes[str(guild.id)] = '$'
+    with open('prefixes.json', 'w') as f:
+        json.dump(prefixes, f, indent=4)
 
 
 @stonks.event  # When bots leaves a server, default prefix is removed from json
 async def on_guild_remove(guild):
-    await register(guild)
+    with open('prefixes.json', 'r') as f:
+        prefixes = json.load(f)
+    prefixes.pop(str(guild.id))
+    with open('prefixes.json', 'w') as f:
+        json.dump(prefixes, f, indent=4)
 
 
 @stonks.command(hidden=True)  # Loads on extension

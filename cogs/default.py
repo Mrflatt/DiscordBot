@@ -7,7 +7,6 @@ from discord.ext import commands, tasks
 from datetime import datetime
 from itertools import cycle
 
-
 load_dotenv()
 REDDIT_ID = os.getenv('REDDIT_ID')
 REDDIT_SECRET = os.getenv('REDDIT_SECRET')
@@ -18,20 +17,7 @@ class Default(commands.Cog):
 
     def __init__(self, stonks):
         self.stonks = stonks
-        self.status = cycle([f"Sqlite3 database", "with your mom", "Pycharm", "Fortnite"])
-        self.status_task.start()
         self.stonks.loop.create_task(self.once_a_hour())
-
-    def cog_unload(self):
-        self.status_task.cancel()
-
-    @tasks.loop(minutes=60)  # Changes bot status every hour, status list is in top
-    async def status_task(self):
-        try:
-            await self.stonks.change_presence(activity=discord.Game(next(self.status)))
-
-        except AttributeError:
-            pass
 
     @commands.Cog.listener()  # Prints reddit post and bitcoins value every even hour
     async def once_a_hour(self):

@@ -262,7 +262,7 @@ class AudioController(object):
         if self.guild.voice_client is None or (
                 not self.guild.voice_client.is_paused() and not self.guild.voice_client.is_playing()):
             return
-        self.playlist.next()
+        self.playlist.next(self.current_song)
         self.playlist.playque.clear()
         self.guild.voice_client.stop()
 
@@ -277,12 +277,11 @@ class AudioController(object):
         if not self.guild.voice_client.is_playing() and not self.guild.voice_client.is_paused():
 
             if prev_song == "Dummy":
-                self.playlist.next()
+                self.playlist.next(self.current_song)
                 return None
-            await self.play_youtube(prev_song)
+            await self.play_song(prev_song)
         else:
-            self.playlist.prev()
-            self.playlist.prev()
+
             self.guild.voice_client.stop()
 
     def clear_queue(self):

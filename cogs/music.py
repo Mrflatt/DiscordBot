@@ -55,7 +55,7 @@ class Music(commands.Cog):
         if await utils.play_check(ctx) is False:
             return
 
-        if len(audio_controller.playlist.playque) < 1:
+        if len(audio_controller.playlist.playque) < 1 and current_guild.voice_client.is_playing() is False:
             await ctx.send("No songs in queue!")
             return
 

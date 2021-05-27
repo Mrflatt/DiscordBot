@@ -281,3 +281,5 @@ cython_debug/
 *.idea
 
 /musicbot/generated
+prefixes.json
+config/cookies/

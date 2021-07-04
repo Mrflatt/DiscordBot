@@ -1,16 +1,14 @@
+import os
+
 import discord
 import requests
 import json
-import urllib
 import time
-import matplotlib.pyplot as plt
 from discord.ext import commands
 from utility import helpers
 from discord.ext.commands import command
 from datetime import datetime
-from urllib import request
-from pandas_datareader import data as pdr
-import pandas as pd
+import aiohttp
 import yfinance as yf
 yf.pdr_override()
 
@@ -20,6 +18,7 @@ class Utils(commands.Cog):
 
     def __init__(self, stonks):
         self.stonks = stonks
+        self.vantage_key = os.environ.get("ALPHAVANTAGE")
 
     @command(help="Get's ip data from domain or IP")
     async def ip(self, ctx, arg):
@@ -82,24 +81,31 @@ class Utils(commands.Cog):
         emb = discord.Embed(title="Bitcoin", description=btc, color=discord.Color.gold())
         await ctx.send(embed=emb)
 
-    @command(help="Shows stocks price curve for last 24h")
-    async def plot(self, ctx, tick):
-        font1 = {'family': 'serif', 'color': 'darkred', 'size': 20}
-        image = discord.File("plot.png")
-        plot_show(tick)
-        plt.title(tick.upper(), fontdict=font1)
-        plt.savefig("plot.png")
-        await ctx.send(file=image)
+    @command(name='convert', help='Convert from one currency to another one i.e, -convert USD JPY.')
+    async def convert(self, ctx, from_currency, to_currency):
+        url = 'https://www.alphavantage.co/query'
+        params = {
+            "function": "CURRENCY_EXCHANGE_RATE",
+            "from_currency": from_currency,
+            "to_currency": to_currency,
+            "apikey": self.vantage_key
+        }
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url, params=params) as response:
+                if response.status == 200:
+                    bucks = await response.json()
+                    from_currency = bucks["Realtime Currency Exchange Rate"]["1. From_Currency Code"]
+                    to_currency = bucks["Realtime Currency Exchange Rate"]["3. To_Currency Code"]
+                    exchange_rate = bucks["Realtime Currency Exchange Rate"]["5. Exchange Rate"]
+                    embed = discord.Embed(
+                        color=discord.Color.purple()
+                    )
+                    embed.add_field(
+                        name="Conversion", value=f'**1 {from_currency} is {exchange_rate} {to_currency}**', inline=False)
 
-
-def plot_show(tikkeri):
-    font2 = {'family': 'serif', 'color': 'darkred', 'size': 15}
-    data = pdr.get_data_yahoo(tikkeri, period="1d", interval="15m")
-    ax = data[['Close']].plot(figsize=(9, 5), marker='o', ms=3, mec='black', mfc='black')
-    ax.set_xlabel('Time', fontdict=font2)
-    ax.set_ylabel('Price', fontdict=font2)
-    ax.grid(True)
-    return ax
+                    await ctx.reply(embed=embed)
+                else:
+                    await ctx.send(f'No company found!')
 
 
 def setup(stonks):

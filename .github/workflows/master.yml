@@ -29,4 +29,3 @@ jobs:
           pip install \
           --disable-pip-version-check black
           black --check .
-

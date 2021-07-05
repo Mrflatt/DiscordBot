@@ -5,11 +5,25 @@ on:
     types: [published, created]
 
 jobs:
-  docker:
+  docker_image:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Import GPG key
+        id: import_gpg
+        uses: crazy-max/ghaction-import-gpg@v3
+        with:
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+
+      - name: Reveal secret
+        env:
+          SECRET_PWD: ${{ secrets.PASSPHRASE }}
+        run: |
+          sudo apt install git-secret
+          git secret reveal -p $(echo $SECRET_PWD | sed 's/./& /g')
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1

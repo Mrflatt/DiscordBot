@@ -5,7 +5,7 @@ import requests
 import json
 import time
 from discord.ext import commands
-from src.utility import helpers
+from utility import helpers
 from discord.ext.commands import command
 from datetime import datetime
 import aiohttp

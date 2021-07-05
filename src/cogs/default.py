@@ -1,6 +1,6 @@
 import asyncio
 import os
-from src.utility import helpers
+from utility import helpers
 from dotenv import load_dotenv
 from discord.ext import commands
 from datetime import datetime

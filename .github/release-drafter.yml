@@ -1,53 +1,24 @@
-name-template: $NEXT_MINOR_VERSION
-tag-template: $NEXT_MINOR_VERSION
-version-template: $MAJOR.$MINOR
-
+name-template: $NEXT_PATCH_VERSION
+tag-template: $NEXT_PATCH_VERSION
+template: |
+  # What's Changed
+  $CHANGES
 categories:
-  - title: 💥 Breaking changes
+  - title: ⚠️ Breaking API changes
+    label: type/breaking-api-change
+  - title: 🚀 Features & Enhancements
     labels:
-      - breaking
-  - title: 🚨 Removed
-    label: removed
-  - title: 🎉 Major features and improvements
+      - type/feature
+      - type/enhancement
+  - title: ☠️ Deprecations
+    label: type/deprecation
+  - title: 🐛 Bug Fixes
+    label: type/bug
+  - title: 📖 Documentation
+    label: type/docs
+  - title: 🧹 Housekeeping
     labels:
-      - major-enhancement
-      - major-rfe
-  - title: 🐛 Major bug fixes
-    labels:
-      - major-bug
-  - title: ⚠️ Deprecated
-    label: deprecated
-  - title: 🚀 New features and improvements
-    labels:
-      - enhancement
-      - feature
-      - rfe
-  - title: 🐛 Bug fixes
-    labels:
-      - bug
-      - fix
-      - bugfix
-      - regression
-  - title: 👷 Changes for plugin developers
-    labels:
-      - developer
+      - type/housekeeping
+      - type/test-improvement
   - title: 📦 Dependency updates
     label: dependencies
-  - title: 📝 Documentation updates
-    label: documentation
-  - title: 👻 Maintenance
-    labels:
-      - chore
-      - internal
-  - title: 🚦 Tests
-    labels:
-      - test
-      - tests
-exclude-labels:
-  - reverted
-  - no-changelog
-  - skip-changelog
-  - invalid
-
-template: |
-  $CHANGES

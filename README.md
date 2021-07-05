@@ -1,6 +1,10 @@
 # DiscordBot
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-![Master](https://github.com/MrFlatt/DiscordBot/workflows/master.yml/badge.svg)
+<p>
+<a href="https://github.com/MrFlatt/DiscordBot/actions"><img alt="Actions Status" src="https://github.com/MrFlatt/DiscordBot/workflows/Master/badge.svg"></a>
+<a href="https://github.com/MrFlatt/DiscordBot/actions"><img alt="Actions Status" src="https://github.com/MrFlatt/DiscordBot/workflows/Release/badge.svg"></a>
+</p>
+[![Master](https://github.com/MrFlatt/DiscordBot/workflows/master.yml/badge.svg)]
 ![Release](https://github.com/MrFlatt/DiscordBot/workflows/release-drafter.yml/badge.svg)
 
 

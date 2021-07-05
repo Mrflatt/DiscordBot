@@ -1,9 +1,11 @@
-FROM python:3-alpine
+FROM python:3
 
 WORKDIR /usr/src/app
 
-COPY requirements.txt ./
+COPY requirements.txt /usr/src/app/
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-CMD [ "python", "./bot.py" ]
+COPY /src /usr/src/app/
+
+CMD [ "python", "bot.py" ]

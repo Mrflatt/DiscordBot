@@ -6,6 +6,7 @@ from discord.ext.commands import command
 
 class Mod(commands.Cog):
     """Mod commands, needs admin permissions."""
+
     def __init__(self, stonks):
         self.stonks = stonks
         self.last_msg = None
@@ -47,7 +48,7 @@ class Mod(commands.Cog):
         for ban_entry in banned_users:
             user = ban_entry.user
 
-            if(user.name, user.discriminator) == (member_name, member_discriminator):
+            if (user.name, user.discriminator) == (member_name, member_discriminator):
                 await ctx.guild.unban(user)
                 await ctx.send(f"{user.mention} has been unbanned!")
                 return
@@ -63,13 +64,17 @@ class Mod(commands.Cog):
         await member.edit(nick=nick)
         await ctx.send(f"Nickname was changed to {member.mention}!")
 
-    @command(name='setprefix', help="Set servers prefix for commands", aliases=["changeprefix"])
+    @command(
+        name="setprefix",
+        help="Set servers prefix for commands",
+        aliases=["changeprefix"],
+    )
     @commands.has_permissions(administrator=True)
     async def set_prefix(self, ctx, prefix):
-        with open('prefixes.json', 'r') as f:
+        with open("prefixes.json", "r") as f:
             prefixes = json.load(f)
         prefixes[str(ctx.guild.id)] = prefix
-        with open('prefixes.json', 'w') as f:
+        with open("prefixes.json", "w") as f:
             json.dump(prefixes, f, indent=4)
         await ctx.send(f"Successfully changed the prefix to: {prefix}")
 

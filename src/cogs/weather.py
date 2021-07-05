@@ -37,13 +37,13 @@ class Weather(commands.Cog):
             now_hour = datetime.now().hour
             now_minute = datetime.now().minute
             if now_hour == 10 and now_minute == 00:
-                emb = weather_query('kotka')
+                emb = weather_query("kotka")
                 emb.set_footer(text=f"Requested automatic by {self.stonks.name}")
                 await channel.send(f"It's going to be beautiful day!")
                 await channel.send(embed=emb)
                 time_ = 90
             elif now_hour == 16 and now_minute == 15:
-                emb = weather_query('kotka')
+                emb = weather_query("kotka")
                 emb.set_footer(text=f"Requested automatic by {self.stonks.name}")
                 await channel.send(f"Weather now!")
                 await channel.send(embed=emb)
@@ -66,7 +66,11 @@ def weather_query(city):
     sunrise = data.astronomy.sunrise
     pressure = data.atmosphere.pressure
     wind_speed = data.atmosphere.visibility
-    emb = discord.Embed(title=f"Weather in {city.capitalize()} {country.capitalize()}", timestamp=datetime.utcnow(), color=discord.Color.random())
+    emb = discord.Embed(
+        title=f"Weather in {city.capitalize()} {country.capitalize()}",
+        timestamp=datetime.utcnow(),
+        color=discord.Color.random(),
+    )
     emb.add_field(name="Description", value=f"{temp_text}", inline=False)
     emb.add_field(name="Temperature(°C)", value=f"{avg_temp}°C", inline=False)
     emb.add_field(name="Visibility(km)", value=f"{wind_speed}km", inline=False)

@@ -4,7 +4,6 @@ yahoo-weather
 tweepy
 PySocks
 python-dotenv
-spotipy
 PyNaCl
 praw
 pandas-datareader
@@ -17,4 +16,4 @@ discord.py
 beautifulsoup4
 requests
 aiohttp
-asyncpraw
+toml

@@ -1,15 +1,13 @@
-import discord
 import asyncio
 import os
-from utility import helpers
+from src.utility import helpers
 from dotenv import load_dotenv
-from discord.ext import commands, tasks
+from discord.ext import commands
 from datetime import datetime
-from itertools import cycle
 
 load_dotenv()
-REDDIT_ID = os.getenv('REDDIT_ID')
-REDDIT_SECRET = os.getenv('REDDIT_SECRET')
+REDDIT_ID = os.getenv("REDDIT_ID")
+REDDIT_SECRET = os.getenv("REDDIT_SECRET")
 
 
 class Default(commands.Cog):
@@ -26,8 +24,10 @@ class Default(commands.Cog):
         while not self.stonks.is_closed():
             now_ = datetime.now().minute
             if now_ == 00:
-                await channel.send(f"Jos bitcoin droppaa alle 45k, niin pakko ostaa {helpers.bitcoin()}")
-                await channel.send(helpers.reddit_memes('wallstreetbets'))
+                await channel.send(
+                    f"Jos bitcoin droppaa alle 45k, niin pakko ostaa {helpers.bitcoin()}"
+                )
+                await channel.send(helpers.reddit_memes("wallstreetbets"))
                 time_ = 90
             else:
                 time_ = 10
@@ -38,7 +38,9 @@ class Default(commands.Cog):
         channel = self.stonks.get_channel(794886689654177792)
         if not channel:
             return
-        await channel.send(f"Welcome! {member.mention} Play safe! You are {len(list(member.guild.members))} member.")
+        await channel.send(
+            f"Welcome! {member.mention} Play safe! You are {len(list(member.guild.members))} member."
+        )
 
     @commands.Cog.listener()  # Listen to this messages on chat
     async def on_message(self, message):

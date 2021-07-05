@@ -1,0 +1,21 @@
+name-template: $NEXT_PATCH_VERSION
+tag-template: $NEXT_PATCH_VERSION
+categories:
+  - title: ⚠️ Breaking API changes
+    label: type/breaking-api-change
+  - title: 🚀 Features
+    labels:
+      - type/feature
+      - type/enhancement
+  - title: 🐛 Bug Fixes
+    label: type/bug
+  - title: 📖 Documentation
+    label: type/docs
+  - title: 🧹 Housekeeping
+    labels:
+      - type/housekeeping
+      - type/test-improvement
+  change-template: * $TITLE @$AUTHOR
+  change-template: ### $TITLE
+  template: |
+    $CHANGES

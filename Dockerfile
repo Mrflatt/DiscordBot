@@ -1,4 +1,4 @@
-FROM python:3:buster
+FROM python:3-buster
 
 COPY requirements.txt /usr/src/app/
 

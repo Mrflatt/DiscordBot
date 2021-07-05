@@ -1,5 +1,8 @@
 # DiscordBot
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+![Master](https://github.com/MrFlatt/DiscordBot/workflows/master.yml/badge.svg)
+![Release](https://github.com/MrFlatt/DiscordBot/workflows/release-drafter.yml/badge.svg)
+
 
 A discord bot that can do anything!
 

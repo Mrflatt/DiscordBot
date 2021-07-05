@@ -11,12 +11,11 @@ load_dotenv()
 TOKEN = os.environ.get("TOKEN")
 GUILD = os.environ.get("GUILD")
 OWNER = os.environ.get("OWNER")
-cookie_path = "/config/cookies.txt"
 intents = Intents.all()
 
 
 def get_prefix(client, message):
-    with open("prefixes.json", "r") as f:
+    with open(f"{current_directory}/prefixes.json", "r") as f:
         prefixes = json.load(f)
         return prefixes[str(message.guild.id)]
 
@@ -48,7 +47,7 @@ if __name__ == "__main__":
     if TOKEN == "":
         print("Error: No bot token!")
 
-    for cog in os.listdir(f"{current_directory}\cogs"):
+    for cog in os.listdir(f"{current_directory}/cogs"):
         if cog.endswith(".py") and cog != "__init__.py":
             try:
                 cog = f"cogs.{cog.replace('.py', '')}"
@@ -101,19 +100,19 @@ async def on_ready():
 
 @stonks.event
 async def on_guild_join(guild):
-    with open("prefixes.json", "r") as f:
+    with open(f"{current_directory}/prefixes.json", "r") as f:
         prefixes = json.load(f)
     prefixes[str(guild.id)] = "$"
-    with open("prefixes.json", "w") as f:
+    with open(f"{current_directory}/prefixes.json", "w") as f:
         json.dump(prefixes, f, indent=4)
 
 
 @stonks.event
 async def on_guild_remove(guild):
-    with open("prefixes.json", "r") as f:
+    with open(f"{current_directory}/prefixes.json", "r") as f:
         prefixes = json.load(f)
     prefixes.pop(str(guild.id))
-    with open("prefixes.json", "w") as f:
+    with open(f"{current_directory}/prefixes.json", "w") as f:
         json.dump(prefixes, f, indent=4)
 
 

@@ -1,11 +1,11 @@
-from discord.ext import commands
-import discord
 import asyncio
-import youtube_dl
 import logging
 import math
-from src.musicbot.video import Video
-from src.musicbot import config
+import discord
+import youtube_dl
+from discord.ext import commands
+from musicbot import config
+from musicbot import video as vid
 
 
 FFMPEG_BEFORE_OPTS = "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5"
@@ -34,17 +34,6 @@ async def in_voice_channel(ctx):
         return True
     else:
         raise commands.CommandError("You need to be in the channel to do that.")
-
-
-async def is_audio_requester(ctx):
-    """Checks that the command sender is the song requester."""
-    music = ctx.stonks.get_cog("Music")
-    state = music.get_state(ctx.guild)
-    permissions = ctx.channel.permissions_for(ctx.author)
-    if permissions.administrator or state.is_requester(ctx.author):
-        return True
-    else:
-        raise commands.CommandError("You need to be the song requester to do that.")
 
 
 class Music(commands.Cog):
@@ -80,7 +69,6 @@ class Music(commands.Cog):
     @commands.command(aliases=["resume", "p"])
     @commands.check(audio_playing)
     @commands.check(in_voice_channel)
-    @commands.check(is_audio_requester)
     async def pause(self, ctx):
         """Pauses any currently playing audio."""
         client = ctx.guild.voice_client
@@ -95,7 +83,6 @@ class Music(commands.Cog):
     @commands.command(aliases=["vol", "v"])
     @commands.check(audio_playing)
     @commands.check(in_voice_channel)
-    @commands.check(is_audio_requester)
     async def volume(self, ctx, volume: int):
         """Change the volume of currently playing audio (values 0-250)."""
         state = self.get_state(ctx.guild)
@@ -104,10 +91,8 @@ class Music(commands.Cog):
             volume = 0
 
         max_vol = self.config["max_volume"]
-        if max_vol > -1:
-
-            if volume > max_vol:
-                volume = max_vol
+        if -1 < max_vol < volume:
+            volume = max_vol
 
         client = ctx.guild.voice_client
 
@@ -116,7 +101,6 @@ class Music(commands.Cog):
 
     @commands.command()
     @commands.check(audio_playing)
-    @commands.check(in_voice_channel)
     async def skip(self, ctx):
         """Skips the currently playing song, or votes to skip it."""
         state = self.get_state(ctx.guild)
@@ -228,13 +212,12 @@ class Music(commands.Cog):
     @commands.command(brief="Plays audio from <url>.")
     async def play(self, ctx, *, url):
         """Plays audio hosted at <url> (or performs a search for <url> and plays the first result)."""
-
         client = ctx.guild.voice_client
         state = self.get_state(ctx.guild)
 
         if client and client.channel:
             try:
-                video = Video(url, ctx.author)
+                video = vid.Video(url, ctx.author)
             except youtube_dl.DownloadError as e:
                 logging.warning(f"Error downloading video: {e}")
                 await ctx.send("There was an error downloading your video, sorry.")
@@ -246,7 +229,7 @@ class Music(commands.Cog):
             if ctx.author.voice is not None and ctx.author.voice.channel is not None:
                 channel = ctx.author.voice.channel
                 try:
-                    video = Video(url, ctx.author)
+                    video = vid.Video(url, ctx.author)
                 except youtube_dl.DownloadError as e:
                     await ctx.send("There was an error downloading your video, sorry.")
                     return
@@ -312,8 +295,8 @@ class Music(commands.Cog):
 
     async def _add_reaction_controls(self, message):
         """Adds a 'control-panel' of reactions to a message that can be used to control the bot."""
-        CONTROLS = ["⏮", "⏯", "⏭"]
-        for control in CONTROLS:
+        controls = ["⏮", "⏯", "⏭"]
+        for control in controls:
             await message.add_reaction(control)
 
 

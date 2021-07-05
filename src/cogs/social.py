@@ -1,6 +1,6 @@
 import os
 from discord.ext import commands
-from src.utility import helpers
+from utility import helpers
 from dotenv import load_dotenv
 
 load_dotenv()

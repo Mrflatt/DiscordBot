@@ -16,12 +16,15 @@ jobs:
 
       - name: Set up Python
         uses: actions/setup-python@v2
-        run: pip install black
+        with:
+          python-version: 3.9
 
       - name: autoblack_check
         id: black-check
         continue-on-error: true
-        run: black --check src/
+        run: |
+          pip install black
+          black --check src/
 
       - name: autoblack
         if: steps.black-check.outcome != 'success'

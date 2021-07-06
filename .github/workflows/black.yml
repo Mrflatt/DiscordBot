@@ -20,7 +20,6 @@ jobs:
 
       - name: autoblack_check
         id: black-check
-        continue-on-error: true
         run: |
           pip install black
           black --check src/
@@ -28,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - autoblack
-    if: ${{ failure() }}
+    if: failure()
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -39,6 +38,7 @@ jobs:
       - name: Format and push
         id: format
         run: |
+          pip install black
           black src/
           git config --global user.name github-actions
           git config --global user.email '${GITHUB_ACTOR}@github.com'
@@ -49,7 +49,8 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - autoblack
-    if: ${{ failure() }}
+      - codestyle
+    if: always()
     steps:
       - name: Notify
         uses: nobrayner/discord-webhook@v1

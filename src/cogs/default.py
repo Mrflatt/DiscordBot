@@ -4,6 +4,7 @@ from utility import helpers
 from dotenv import load_dotenv
 from discord.ext import commands
 from datetime import datetime
+from cogs import utils
 
 load_dotenv()
 REDDIT_ID = os.getenv("REDDIT_ID")
@@ -24,7 +25,7 @@ class Default(commands.Cog):
         while not self.bot.is_closed():
             now_ = datetime.now().minute
             if now_ == 00:
-                await channel.send(f"{helpers.bitcoin()}")
+                await channel.send(f"{bitcoin()}")
                 await channel.send(helpers.reddit_memes("wallstreetbets"))
                 time_ = 90
             else:

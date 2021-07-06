@@ -10,8 +10,10 @@ COPY /src /usr/src/app/
 
 WORKDIR /usr/src/app
 
-RUN pip install --no-cache-dir --disable-pip-version-check -r requirements.txt
+RUN python3 -m pip install -U discord.py
 
-RUN pip install --no-cache-dir -e .
+RUN pip install --disable-pip-version-check -r requirements.txt
+
+RUN pip install -e .
 
 CMD [ "python", "bot.py" ]

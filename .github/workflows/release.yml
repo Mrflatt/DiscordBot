@@ -52,10 +52,9 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/arm64
   notify:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs:
-      - docker-image
-    if: ${{ failure() }}
+      - docker_image
     steps:
       - name: Notify
         uses: nobrayner/discord-webhook@v1

@@ -24,11 +24,3 @@ def reddit_memes(subreddit_id):
     for i in range(top):
         random_sub = next(x for x in submission if not x.stickied)
     return random_sub.url
-
-
-def bitcoin():
-    response = urllib.request.urlopen(
-        "https://api.coindesk.com/v1/bpi/currentprice/BTC.json"
-    )
-    data = json.load(response)
-    return f'${data["bpi"]["USD"]["rate"]}'

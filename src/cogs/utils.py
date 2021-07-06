@@ -1,13 +1,12 @@
-import os
-import discord
-import requests
 import json
+import os
 import time
-from discord.ext import commands
-from discord.ext.commands import command, cooldown
 from datetime import datetime
-import aiohttp
+from discord import Member
+import requests
 import yfinance as yf
+from discord.ext import commands
+from discord.ext.commands import command
 
 yf.pdr_override()
 
@@ -59,7 +58,7 @@ class Utils(commands.Cog):
         await ctx.send(embed=emb)
 
     @command(help="Shows user information")
-    async def userinfo(self, ctx, member: discord.Member = None):
+    async def userinfo(self, ctx, member: Member = None):
         member = ctx.author if not member else member
         roles = [role for role in member.roles]
         emb = discord.Embed(color=member.color, timestamp=datetime.utcnow())

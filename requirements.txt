@@ -1,15 +1,12 @@
 youtube-dl
 yfinance
 beautifulsoup4
-PySocks
 python-dotenv
-pynacl==1.4.0
 praw
 luhn
 dnspython
 google-api-client
 google-api-python-client
-discord.py
 requests
 aiohttp
 toml

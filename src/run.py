@@ -1,16 +1,10 @@
-import json
 import os
 import sys
-import discord
-import logging
 from cogs import utils
-from utility import setup
 from discord.ext import commands
 from dotenv import load_dotenv
+from utility import setup
 
-sys.path.append(os.path.abspath(os.path.dirname(__file__)))
-
-os.chdir(os.path.dirname(__file__))
 
 load_dotenv()
 TOKEN = os.environ.get("TOKEN")

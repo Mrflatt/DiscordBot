@@ -84,16 +84,6 @@ def setup(bot):
     bot.add_cog(Finance(bot))
 
 
-# response = urllib.request.urlopen(
-#        "https://api.coindesk.com/v1/bpi/currentprice/USD.json"
-#     )
-# response_eur = urllib.request.urlopen("https://api.coindesk.com/v1/bpi/currentprice/EUR.json")
-# data = json.load(response)
-# EUR = json.load(response_eur)
-# print(data)
-# print(EUR["bpi"]["EUR"]["rate"])
-
-
 def bitcoin():
     response_eur = urllib.request.urlopen(
         "https://api.coindesk.com/v1/bpi/currentprice/EUR.json"

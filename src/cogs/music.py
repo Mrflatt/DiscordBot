@@ -36,6 +36,17 @@ async def in_voice_channel(ctx):
         raise commands.CommandError("You need to be in the channel to do that.")
 
 
+async def is_audio_requester(ctx):
+    """Checks that the command sender is the song requester."""
+    music = ctx.stonks.get_cog("Music")
+    state = music.get_state(ctx.guild)
+    permissions = ctx.channel.permissions_for(ctx.author)
+    if permissions.administrator or state.is_requester(ctx.author):
+        return True
+    else:
+        raise commands.CommandError("You need to be the song requester to do that.")
+
+
 class Music(commands.Cog):
     """Bot commands to help play music."""
 
@@ -53,10 +64,9 @@ class Music(commands.Cog):
             self.states[guild.id] = GuildState()
             return self.states[guild.id]
 
-    @commands.command(aliases=["stop"])
+    @commands.command(aliases=["stop"], help="Bot leaves voice channel.")
     @commands.has_permissions(administrator=True)
     async def leave(self, ctx):
-        """Leaves the voice channel, if currently in one."""
         client = ctx.guild.voice_client
         state = self.get_state(ctx.guild)
         if client and client.channel:
@@ -66,11 +76,13 @@ class Music(commands.Cog):
         else:
             raise commands.CommandError("Not in a voice channel.")
 
-    @commands.command(aliases=["resume", "p"])
+    @commands.command(
+        aliases=["resume", "p"], help="Pause any currently playing audio."
+    )
     @commands.check(audio_playing)
     @commands.check(in_voice_channel)
+    @commands.check(is_audio_requester)
     async def pause(self, ctx):
-        """Pauses any currently playing audio."""
         client = ctx.guild.voice_client
         self._pause_audio(client)
 
@@ -80,11 +92,11 @@ class Music(commands.Cog):
         else:
             client.pause()
 
-    @commands.command(aliases=["vol", "v"])
+    @commands.command(aliases=["vol", "v"], help="Change current volume (values 0-250)")
     @commands.check(audio_playing)
     @commands.check(in_voice_channel)
+    @commands.check(is_audio_requester)
     async def volume(self, ctx, volume: int):
-        """Change the volume of currently playing audio (values 0-250)."""
         state = self.get_state(ctx.guild)
 
         if volume < 0:
@@ -99,10 +111,10 @@ class Music(commands.Cog):
         state.volume = float(volume) / 100.0
         client.source.volume = state.volume
 
-    @commands.command()
+    @commands.command(help="Skip current song.")
     @commands.check(audio_playing)
+    @commands.check(in_voice_channel)
     async def skip(self, ctx):
-        """Skips the currently playing song, or votes to skip it."""
         state = self.get_state(ctx.guild)
         client = ctx.guild.voice_client
         if ctx.channel.permissions_for(ctx.author).administrator or state.is_requester(
@@ -157,24 +169,21 @@ class Music(commands.Cog):
 
         client.play(source, after=after_playing)
 
-    @commands.command(aliases=["np"])
+    @commands.command(aliases=["np"], help="Display information about current song.")
     @commands.check(audio_playing)
     async def nowplaying(self, ctx):
-        """Displays information about the current song."""
         state = self.get_state(ctx.guild)
         message = await ctx.send("", embed=state.now_playing.get_embed())
         await self._add_reaction_controls(message)
 
-    @commands.command(aliases=["q", "playlist"])
+    @commands.command(aliases=["q", "playlist"], help="Display current play queue.")
     @commands.guild_only()
     @commands.check(audio_playing)
     async def queue(self, ctx):
-        """Display the current play queue."""
         state = self.get_state(ctx.guild)
         await ctx.send(self._queue_text(state.playlist))
 
     def _queue_text(self, queue):
-        """Returns a block of text describing a given song queue."""
         if len(queue) > 0:
             message = [f"{len(queue)} songs in queue:"]
             message += [
@@ -185,19 +194,17 @@ class Music(commands.Cog):
         else:
             return "The play queue is empty."
 
-    @commands.command(aliases=["cq"])
+    @commands.command(aliases=["cl"], help="Clear the play queue.")
     @commands.check(audio_playing)
     @commands.has_permissions(administrator=True)
     async def clear(self, ctx):
-        """Clears the play queue without leaving the channel."""
         state = self.get_state(ctx.guild)
         state.playlist = []
 
-    @commands.command(aliases=["jq"])
+    @commands.command(aliases=["jq"], help="Jump to song <index>")
     @commands.check(audio_playing)
     @commands.has_permissions(administrator=True)
     async def jump(self, ctx, song: int, new_index: int):
-        """Moves song at an index to `new_index` in queue."""
         state = self.get_state(ctx.guild)
         if 1 <= song <= len(state.playlist) and 1 <= new_index:
             song = state.playlist.pop(song - 1)
@@ -207,9 +214,8 @@ class Music(commands.Cog):
         else:
             raise commands.CommandError("You must use a valid index.")
 
-    @commands.command(brief="Plays audio from <url>.")
+    @commands.command(help="Plays audio from <url>.")
     async def play(self, ctx, *, url):
-        """Plays audio hosted at <url> (or performs a search for <url> and plays the first result)."""
         client = ctx.guild.voice_client
         state = self.get_state(ctx.guild)
 
@@ -300,8 +306,6 @@ def setup(bot):
 
 
 class GuildState:
-    """Helper class managing per-guild state."""
-
     def __init__(self):
         self.volume = 1.0
         self.playlist = []

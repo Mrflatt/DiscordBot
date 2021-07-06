@@ -1,6 +1,6 @@
 import logging
 import os
-import discord
+from discord import Intents
 import json
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
@@ -40,25 +40,25 @@ def setup_logging() -> logging.Logger:
     return logger
 
 
-def bot_intents() -> discord.Intents:
-    intents = discord.Intents.default()
+def bot_intents() -> Intents:
+    intents = Intents.all()
     intents.guilds = True
     intents.members = True
     intents.bans = True
-    intents.emojis = False
-    intents.integrations = False
-    intents.webhooks = False
-    intents.invites = False
-    intents.voice_states = False
+    intents.emojis = True
+    intents.integrations = True
+    intents.webhooks = True
+    intents.invites = True
+    intents.voice_states = True
     intents.presences = True
     intents.messages = True
-    # intents.guild_messages = True
-    # intents.dm_messages = True
+    intents.guild_messages = True
+    intents.dm_messages = True
     intents.reactions = True
-    # intents.guild_reactions = True
-    # intents.dm_reactions = True
-    intents.typing = False
-    # intents.guild_typing = False
-    # intents.dm_typing = False
+    intents.guild_reactions = True
+    intents.dm_reactions = True
+    intents.typing = True
+    intents.guild_typing = True
+    intents.dm_typing = True
 
     return intents

@@ -36,7 +36,7 @@ if __name__ == "__main__":
         "cogs.random",
         "cogs.utils",
         "cogs.finance",
-        "cogs.core.events"
+        "cogs.core.events",
     ]
     logger = setup.setup_logging()
     bot.logger = logger
@@ -49,8 +49,6 @@ if __name__ == "__main__":
         bot.load_extension(cog)
     bot.help_command = utils.MyHelp()
     # bot.help_command = utils.MyNewHelp()
-
-
 
 
 bot.run(TOKEN)

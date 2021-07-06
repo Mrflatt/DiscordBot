@@ -6,7 +6,6 @@ from utility import setup
 
 
 class Events(commands.Cog):
-
     def __init__(self, bot):
         self.bot = bot
 
@@ -24,7 +23,7 @@ class Events(commands.Cog):
                 embed = discord.Embed(
                     color=self.d.cc,
                     description=f"Hey y'all! Type `$help` to get started with Bot!\n"
-                                f"If you need any more help, check out the **[Github](https://github.com/Mrflatt/DiscordBot)**!",
+                    f"If you need any more help, check out the **[Github](https://github.com/Mrflatt/DiscordBot)**!",
                 )
                 embed.set_author(name="Bot")
                 embed.set_footer(text=f"Made by MrFlatt!")

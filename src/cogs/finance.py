@@ -9,7 +9,6 @@ import asyncio
 
 
 class Finance(commands.Cog):
-
     def __init__(self, bot):
         self.bot = bot
         self.status_task.start()
@@ -18,25 +17,33 @@ class Finance(commands.Cog):
     async def status_task(self):
         await asyncio.sleep(2)
         response = requests.get("https://www.bitcoin.de")
-        soup = BeautifulSoup(response.content, 'html.parser')
+        soup = BeautifulSoup(response.content, "html.parser")
         btc_price = soup.find(id="ticker_price").text
-        await self.bot.change_presence(activity=discord.Game(f"BTC-Price: {btc_price}"), status=discord.Status.online)
+        await self.bot.change_presence(
+            activity=discord.Game(f"BTC-Price: {btc_price}"),
+            status=discord.Status.online,
+        )
         await asyncio.sleep(10)
         response = requests.get("https://www.bitcoin.de/de/etheur/market")
-        soup = BeautifulSoup(response.content, 'html.parser')
+        soup = BeautifulSoup(response.content, "html.parser")
         ether_price = soup.find(id="ticker_price").text
-        await self.bot.change_presence(activity=discord.Game(f"Ether-Price: {ether_price}"), status=discord.Status.online)
+        await self.bot.change_presence(
+            activity=discord.Game(f"Ether-Price: {ether_price}"),
+            status=discord.Status.online,
+        )
         await asyncio.sleep(10)
         response = requests.get("https://www.bitcoin.de/de/ltceur/market")
-        soup = BeautifulSoup(response.content, 'html.parser')
+        soup = BeautifulSoup(response.content, "html.parser")
         ltc_price = soup.find(id="ticker_price").text
-        await self.bot.change_presence(activity=discord.Game(f"LTC-Price: {ltc_price}"), status=discord.Status.online)
+        await self.bot.change_presence(
+            activity=discord.Game(f"LTC-Price: {ltc_price}"),
+            status=discord.Status.online,
+        )
         await asyncio.sleep(10)
 
 
 def setup(bot):
     bot.add_cog(Finance(bot))
-
 
 
 # response = urllib.request.urlopen(

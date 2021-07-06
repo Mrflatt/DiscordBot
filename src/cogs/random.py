@@ -24,10 +24,8 @@ class Random(commands.Cog):
     @commands.command(help="")
     async def counter(ctx: commands.Context):
         """Starts a counter for pressing."""
-        await ctx.send('Press!')
+        await ctx.send("Press!")
 
 
 def setup(bot):
     bot.add_cog(Random(bot))
-
-

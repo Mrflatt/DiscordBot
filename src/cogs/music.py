@@ -132,9 +132,7 @@ class Music(commands.Cog):
         logging.info(f"{member.name} votes to skip")
         state = self.get_state(channel.guild)
         state.skip_votes.add(member)
-        users_in_channel = len(
-            [member for member in channel.members if not member.bot]
-        )
+        users_in_channel = len([member for member in channel.members if not member.bot])
         if (float(len(state.skip_votes)) / users_in_channel) >= self.config[
             "vote_skip_ratio"
         ]:
@@ -280,11 +278,7 @@ class Music(commands.Cog):
 
                     channel = message.channel
                     users_in_channel = len(
-                        [
-                            member
-                            for member in voice_channel.members
-                            if not member.bot
-                        ]
+                        [member for member in voice_channel.members if not member.bot]
                     )
                     required_votes = math.ceil(
                         self.config["vote_skip_ratio"] * users_in_channel

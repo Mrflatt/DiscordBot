@@ -4,6 +4,7 @@ from discord.ext import commands
 from discord.ext.commands import command
 from utility import setup
 
+
 class Mod(commands.Cog):
     """Mod commands, needs admin permissions."""
 
@@ -64,7 +65,10 @@ class Mod(commands.Cog):
         await member.edit(nick=nick)
         await ctx.send(f"Nickname was changed to {member.mention}!")
 
-    @command(name="setprefix", help="Set servers prefix for commands",)
+    @command(
+        name="setprefix",
+        help="Set servers prefix for commands",
+    )
     @commands.has_permissions(administrator=True)
     async def set_prefix(self, ctx, prefix):
         setup.set_prefix(guild=str(ctx.guild.id), prefix=prefix)

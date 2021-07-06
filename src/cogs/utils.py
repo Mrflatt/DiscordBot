@@ -149,5 +149,3 @@ class MyHelp(commands.HelpCommand):
 
         channel = self.get_destination()
         await channel.send(embed=embed)
-
-

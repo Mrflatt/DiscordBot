@@ -39,11 +39,11 @@ async def in_voice_channel(ctx):
 class Music(commands.Cog):
     """Bot commands to help play music."""
 
-    def __init__(self, stonks, config):
-        self.stonks = stonks
+    def __init__(self, bot, config):
+        self.bot = bot
         self.config = config[__name__.split(".")[-1]]
         self.states = {}
-        self.stonks.add_listener(self.on_reaction_add, "on_reaction_add")
+        self.bot.add_listener(self.on_reaction_add, "on_reaction_add")
 
     def get_state(self, guild):
         """Gets the state for `guild`, creating it if it does not exist."""
@@ -116,7 +116,7 @@ class Music(commands.Cog):
             self._vote_skip(channel, ctx.author)
 
             users_in_channel = len(
-                [member for member in channel.members if not member.stonks]
+                [member for member in channel.members if not member.bot]
             )
             required_votes = math.ceil(
                 self.config["vote_skip_ratio"] * users_in_channel
@@ -133,7 +133,7 @@ class Music(commands.Cog):
         state = self.get_state(channel.guild)
         state.skip_votes.add(member)
         users_in_channel = len(
-            [member for member in channel.members if not member.stonks]
+            [member for member in channel.members if not member.bot]
         )
         if (float(len(state.skip_votes)) / users_in_channel) >= self.config[
             "vote_skip_ratio"
@@ -155,7 +155,7 @@ class Music(commands.Cog):
                 next_song = state.playlist.pop(0)
                 self._play_song(client, state, next_song)
             else:
-                asyncio.run_coroutine_threadsafe(client.disconnect(), self.stonks.loop)
+                asyncio.run_coroutine_threadsafe(client.disconnect(), self.bot.loop)
 
         client.play(source, after=after_playing)
 
@@ -246,7 +246,7 @@ class Music(commands.Cog):
     async def on_reaction_add(self, reaction, user):
         """Responds to reactions added to the stonk's messages, allowing reactions to control playback."""
         message = reaction.message
-        if user != self.stonks.user and message.author == self.stonks.user:
+        if user != self.bot.user and message.author == self.bot.user:
             await message.remove_reaction(reaction, user)
             if message.guild and message.guild.voice_client:
                 user_in_channel = (
@@ -283,7 +283,7 @@ class Music(commands.Cog):
                         [
                             member
                             for member in voice_channel.members
-                            if not member.stonks
+                            if not member.bot
                         ]
                     )
                     required_votes = math.ceil(
@@ -300,9 +300,9 @@ class Music(commands.Cog):
             await message.add_reaction(control)
 
 
-def setup(stonks):
+def setup(bot):
     cfg = config.load_config()
-    stonks.add_cog(Music(stonks, cfg))
+    bot.add_cog(Music(bot, cfg))
 
 
 class GuildState:

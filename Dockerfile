@@ -4,6 +4,8 @@ COPY requirements.txt /usr/src/app/
 
 RUN apt update && apt install ffmpeg -y
 
+RUN apt install libffi-dev python-dev -y
+
 COPY /src /usr/src/app/
 
 WORKDIR /usr/src/app

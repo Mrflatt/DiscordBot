@@ -1,12 +1,11 @@
 import os
-
 import discord
 import requests
 import json
 import time
 from discord.ext import commands
 from utility import helpers
-from discord.ext.commands import command
+from discord.ext.commands import command, cooldown
 from datetime import datetime
 import aiohttp
 import yfinance as yf
@@ -17,8 +16,8 @@ yf.pdr_override()
 class Utils(commands.Cog):
     """Some useful commands, such as server and user info"""
 
-    def __init__(self, stonks):
-        self.stonks = stonks
+    def __init__(self, bot):
+        self.bot = bot
         self.vantage_key = os.environ.get("ALPHAVANTAGE")
 
     @command(help="Get's ip data from domain or IP")
@@ -105,7 +104,7 @@ class Utils(commands.Cog):
         message = await ctx.send("Testing ping...")
         stop_time = time.time()
         await message.edit(
-            content=f"Pong in {round(self.stonks.latency*1000)}ms!\nAPI latency: {round((stop_time - start_time) * 1000)}ms!"
+            content=f"Pong in {round(self.bot.latency * 1000)}ms!\nAPI latency: {round((stop_time - start_time) * 1000)}ms!"
         )
 
     @command(help="Bitcoin's current price")
@@ -116,42 +115,39 @@ class Utils(commands.Cog):
         )
         await ctx.send(embed=emb)
 
-    @command(
-        name="convert",
-        help="Convert from one currency to another one i.e, -convert USD JPY.",
-    )
-    async def convert(self, ctx, from_currency, to_currency):
-        url = "https://www.alphavantage.co/query"
-        params = {
-            "function": "CURRENCY_EXCHANGE_RATE",
-            "from_currency": from_currency,
-            "to_currency": to_currency,
-            "apikey": self.vantage_key,
-        }
-        async with aiohttp.ClientSession() as session:
-            async with session.get(url, params=params) as response:
-                if response.status == 200:
-                    bucks = await response.json()
-                    from_currency = bucks["Realtime Currency Exchange Rate"][
-                        "1. From_Currency Code"
-                    ]
-                    to_currency = bucks["Realtime Currency Exchange Rate"][
-                        "3. To_Currency Code"
-                    ]
-                    exchange_rate = bucks["Realtime Currency Exchange Rate"][
-                        "5. Exchange Rate"
-                    ]
-                    embed = discord.Embed(color=discord.Color.purple())
-                    embed.add_field(
-                        name="Conversion",
-                        value=f"**1 {from_currency} is {exchange_rate} {to_currency}**",
-                        inline=False,
-                    )
 
-                    await ctx.reply(embed=embed)
-                else:
-                    await ctx.send(f"No company found!")
+def setup(bot):
+    bot.add_cog(Utils(bot))
 
 
-def setup(stonks):
-    stonks.add_cog(Utils(stonks))
+class MyNewHelp(commands.MinimalHelpCommand):
+    async def send_pages(self):
+        destination = self.get_destination()
+        for page in self.paginator.pages:
+            emb = discord.Embed(description=page)
+            await destination.send(embed=emb)
+
+
+class MyHelp(commands.HelpCommand):
+    def get_command_signature(self, command):
+        return "%s%s %s" % (
+            self.clean_prefix,
+            command.qualified_name,
+            command.signature,
+        )
+
+    async def send_bot_help(self, mapping):
+        embed = discord.Embed(title="Help", color=discord.Color.random())
+        for cog, commands in mapping.items():
+            filtered = await self.filter_commands(commands, sort=True)
+            command_signatures = [self.get_command_signature(c) for c in filtered]
+            if command_signatures:
+                cog_name = getattr(cog, "qualified_name", "No Category")
+                embed.add_field(
+                    name=cog_name, value="\n".join(command_signatures), inline=False
+                )
+
+        channel = self.get_destination()
+        await channel.send(embed=embed)
+
+

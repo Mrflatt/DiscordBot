@@ -3,7 +3,7 @@ yfinance
 yahoo-weather
 PySocks
 python-dotenv
-PyNaCl
+pynacl==1.4.0
 praw
 luhn
 dnspython

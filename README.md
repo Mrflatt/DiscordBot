@@ -1,10 +1,7 @@
 # DiscordBot
-<p>
-<a href="https://github.com/psf/black"><img alt="Code style: black" src="https://img.shields.io/badge/code%20style-black-000000.svg"></a>
-<a href="https://github.com/MrFlatt/DiscordBot/actions"><img alt="Actions Status" src="https://github.com/MrFlatt/DiscordBot/workflows/black.yml/badge.svg"></a>
-<a href="https://github.com/MrFlatt/DiscordBot/actions"><img alt="Actions Status" src="https://github.com/MrFlatt/DiscordBot/workflows/release.yml/badge.svg"></a>
-<a href="https://github.com/MrFlatt/DiscordBot/actions"><img alt="Actions Status" src="https://github.com/MrFlatt/DiscordBot/workflows/drafter.yml/badge.svg"></a>
-</p>
+[![Check Style](https://github.com/Mrflatt/DiscordBot/actions/workflows/black.yml/badge.svg)](https://github.com/Mrflatt/DiscordBot/actions/workflows/black.yml)
+[![Draft release](https://github.com/Mrflatt/DiscordBot/actions/workflows/drafter.yml/badge.svg)](https://github.com/Mrflatt/DiscordBot/actions/workflows/drafter.yml)
+[![Build and publish](https://github.com/Mrflatt/DiscordBot/actions/workflows/release.yml/badge.svg)](https://github.com/Mrflatt/DiscordBot/actions/workflows/release.yml)
 
 
 A discord bot that can do anything!

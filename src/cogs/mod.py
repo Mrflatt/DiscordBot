@@ -2,13 +2,14 @@ import discord
 import json
 from discord.ext import commands
 from discord.ext.commands import command
+from utility import setup
 
 
 class Mod(commands.Cog):
     """Mod commands, needs admin permissions."""
 
-    def __init__(self, stonks):
-        self.stonks = stonks
+    def __init__(self, bot):
+        self.bot = bot
         self.last_msg = None
 
     @commands.Cog.listener()
@@ -67,17 +68,38 @@ class Mod(commands.Cog):
     @command(
         name="setprefix",
         help="Set servers prefix for commands",
-        aliases=["changeprefix"],
     )
     @commands.has_permissions(administrator=True)
     async def set_prefix(self, ctx, prefix):
-        with open("prefixes.json", "r") as f:
-            prefixes = json.load(f)
-        prefixes[str(ctx.guild.id)] = prefix
-        with open("prefixes.json", "w") as f:
-            json.dump(prefixes, f, indent=4)
+        setup.set_prefix(guild=str(ctx.guild.id), prefix=prefix)
         await ctx.send(f"Successfully changed the prefix to: {prefix}")
 
+    @command(hidden=True)
+    @commands.is_owner()
+    async def load(self, ctx, extension):
+        self.bot.load_extension(f"cogs.{extension}")
+        await ctx.send(f"{extension.capitalize()} loaded!", delete_after=20)
 
-def setup(stonks):
-    stonks.add_cog(Mod(stonks))
+    @command(hidden=True)
+    @commands.is_owner()
+    async def unload(self, ctx, extension):
+        if extension == "mod":
+            await ctx.send("Can't unload mod extension!")
+        else:
+            self.bot.unload_extension(f"cogs.{extension.lower()}")
+            await ctx.send(f"{extension.capitalize()} unloaded!", delete_after=20)
+
+    @command(hidden=True)
+    @commands.is_owner()
+    async def reload(self, ctx, extension):
+        if extension == "all":
+            self.bot.reload_all_cogs(ctx)
+            await ctx.send("All reloaded!", delete_after=20)
+        else:
+            self.bot.unload_extension(f"cogs.{extension}")
+            self.bot.load_extension(f"cogs.{extension}")
+            await ctx.send(f"{extension.capitalize()} reloaded!", delete_after=20)
+
+
+def setup(bot):
+    bot.add_cog(Mod(bot))

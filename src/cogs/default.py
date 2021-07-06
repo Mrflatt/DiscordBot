@@ -13,20 +13,18 @@ REDDIT_SECRET = os.getenv("REDDIT_SECRET")
 class Default(commands.Cog):
     """Different bot events, no commands."""
 
-    def __init__(self, stonks):
-        self.stonks = stonks
-        self.stonks.loop.create_task(self.once_a_hour())
+    def __init__(self, bot):
+        self.bot = bot
+        # self.bot.loop.create_task(self.once_a_hour())
 
     @commands.Cog.listener()  # Prints reddit post and bitcoins value every even hour
     async def once_a_hour(self):
-        await self.stonks.wait_until_ready()
-        channel = self.stonks.get_channel(794886689654177792)
-        while not self.stonks.is_closed():
+        await self.bot.wait_until_ready()
+        channel = self.bot.get_channel(794886689654177792)
+        while not self.bot.is_closed():
             now_ = datetime.now().minute
             if now_ == 00:
-                await channel.send(
-                    f"Jos bitcoin droppaa alle 45k, niin pakko ostaa {helpers.bitcoin()}"
-                )
+                await channel.send(f"{helpers.bitcoin()}")
                 await channel.send(helpers.reddit_memes("wallstreetbets"))
                 time_ = 90
             else:
@@ -35,7 +33,7 @@ class Default(commands.Cog):
 
     @commands.Cog.listener()  # When user joins a server message
     async def on_member_join(self, member):
-        channel = self.stonks.get_channel(794886689654177792)
+        channel = self.bot.get_channel(794886689654177792)
         if not channel:
             return
         await channel.send(
@@ -44,7 +42,7 @@ class Default(commands.Cog):
 
     @commands.Cog.listener()  # Listen to this messages on chat
     async def on_message(self, message):
-        if message.author == self.stonks.user:
+        if message.author == self.bot.user:
             return
         if "homo" in message.content.lower():
             await message.channel.send("No ei kai siinä")
@@ -54,5 +52,5 @@ class Default(commands.Cog):
             await message.channel.purge(limit=1)
 
 
-def setup(stonks):
-    stonks.add_cog(Default(stonks))
+def setup(bot):
+    bot.add_cog(Default(bot))

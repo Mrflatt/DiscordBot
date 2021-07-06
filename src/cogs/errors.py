@@ -4,8 +4,8 @@ from discord.ext import commands
 class Errors(commands.Cog):
     """Handles errors."""
 
-    def __init__(self, stonks):
-        self.stonks = stonks
+    def __init__(self, bot):
+        self.bot = bot
 
     @commands.Cog.listener()
     async def on_command_error(
@@ -32,5 +32,5 @@ class Errors(commands.Cog):
         await ctx.send(message, delete_after=30)
 
 
-def setup(stonks):
-    stonks.add_cog(Errors(stonks))
+def setup(bot):
+    bot.add_cog(Errors(bot))

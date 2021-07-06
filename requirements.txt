@@ -1,6 +1,6 @@
 youtube-dl
 yfinance
-yahoo-weather
+beautifulsoup4
 PySocks
 python-dotenv
 pynacl==1.4.0
@@ -9,7 +9,6 @@ luhn
 dnspython
 google-api-client
 google-api-python-client
-discord-pretty-help
 discord.py
 requests
 aiohttp

@@ -8,7 +8,6 @@ on:
 
 jobs:
   autoblack:
-
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -21,16 +20,40 @@ jobs:
 
       - name: autoblack_check
         id: black-check
-        continue-on-error: true
         run: |
           pip install black
           black --check src/
-
-      - name: autoblack
-        if: steps.black-check.outcome != 'success'
+  codestyle:
+    runs-on: ubuntu-latest
+    needs:
+      - autoblack
+    if: failure()
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - name: Format and push
+        id: format
         run: |
+          pip install black
           black src/
           git config --global user.name github-actions
           git config --global user.email '${GITHUB_ACTOR}@github.com'
           git commit -am "Apply black codestyle" --allow-empty
           git push
+
+  notify:
+    runs-on: ubuntu-latest
+    needs:
+      - autoblack
+      - codestyle
+    if: always()
+    steps:
+      - name: Notify
+        uses: nobrayner/discord-webhook@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          discord-webhook: ${{ secrets.DISCORD_WEBHOOK }}

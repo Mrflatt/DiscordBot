@@ -1,9 +1,9 @@
-name: Drafter
+name: Draft release
 
 on:
   push:
     branches:
-      - master
+      - main
 
   pull_request:
     types:
@@ -12,11 +12,11 @@ on:
       - reopened
 
 jobs:
-
   draft:
     runs-on: ubuntu-latest
     steps:
-      - name: Drafter
+      -
+        name: Draft new release
         uses: release-drafter/release-drafter@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -4,7 +4,6 @@ import requests
 import json
 import time
 from discord.ext import commands
-from utility import helpers
 from discord.ext.commands import command, cooldown
 from datetime import datetime
 import aiohttp
@@ -106,14 +105,6 @@ class Utils(commands.Cog):
         await message.edit(
             content=f"Pong in {round(self.bot.latency * 1000)}ms!\nAPI latency: {round((stop_time - start_time) * 1000)}ms!"
         )
-
-    @command(help="Bitcoin's current price")
-    async def btc(self, ctx):
-        btc = helpers.bitcoin()
-        emb = discord.Embed(
-            title="Bitcoin", description=btc, color=discord.Color.gold()
-        )
-        await ctx.send(embed=emb)
 
 
 def setup(bot):

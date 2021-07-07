@@ -382,7 +382,3 @@ class GuildState:
 
     def is_requester(self, user):
         return self.now_playing.requested_by == user
-
-
-
-

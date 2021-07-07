@@ -27,13 +27,11 @@ jobs:
         if: failure()
         id: format
         run: |
-          pip install black
           black src/
           git config --global user.name github-actions
           git config --global user.email '${GITHUB_ACTOR}@github.com'
-          git pull origin HEAD:${{ github.head_ref }}
           git commit -am "Apply black codestyle" --allow-empty
-          git push origin HEAD:${{ github.head_ref }} -f
+          git push
 
   docker_image:
     name: Test build docker image

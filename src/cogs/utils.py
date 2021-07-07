@@ -89,9 +89,7 @@ class Utils(commands.Cog):
     async def now(self, ctx):
         y = datetime.now()
         x = y.strftime("%H:%M:%S, %d/%m/%Y")
-        emb = Embed(
-            title="Time now", description=x
-        )
+        emb = Embed(title="Time now", description=x)
         emb.set_author(name=ctx.message.author.name, icon_url=ctx.author.avatar_url)
         await ctx.send(embed=emb)
 

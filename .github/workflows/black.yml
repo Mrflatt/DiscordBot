@@ -16,22 +16,15 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: 3.9
-
+          
       - name: Check code style
         id: black-check
         run: |
           pip install black
           black --check src/
 
-      - name: Format code and commit
-        if: failure()
-
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-            python-version: 3.9
-
       - name: Format and push
+        if: failure()
         id: format
         run: |
           pip install black

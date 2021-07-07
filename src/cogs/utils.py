@@ -2,13 +2,12 @@ import json
 import os
 import time
 from datetime import datetime
-from discord import Member
 import requests
-import yfinance as yf
+from discord import Color
+from discord import Embed
+from discord import Member
 from discord.ext import commands
 from discord.ext.commands import command
-
-yf.pdr_override()
 
 
 class Utils(commands.Cog):
@@ -27,10 +26,10 @@ class Utils(commands.Cog):
                 await ctx.send("Haku epäonnistui")
             elif "success" in out["status"]:
                 haku = f"Country: {out['country']}\nRegion: {out['regionName']}\nCity: {out['city']}\nZip: {out['zip']}\nTimezone: {out['timezone']}\nOrg: {out['org']}\nIsp: {out['isp']}\nIp: {out['query']}"
-                emb = discord.Embed(
+                emb = Embed(
                     title=arg,
                     description="Query for domain/ip",
-                    color=discord.Color.blue(),
+                    color=Color.blue(),
                 )
                 emb.add_field(name="Data", value=haku)
                 await ctx.send(embed=emb)
@@ -39,7 +38,7 @@ class Utils(commands.Cog):
 
     @command(help="Shows server information")
     async def info(self, ctx):
-        emb = discord.Embed(
+        emb = Embed(
             title=f"{ctx.guild.name}",
             description="Server Information",
             timestamp=datetime.utcnow(),
@@ -61,7 +60,7 @@ class Utils(commands.Cog):
     async def userinfo(self, ctx, member: Member = None):
         member = ctx.author if not member else member
         roles = [role for role in member.roles]
-        emb = discord.Embed(color=member.color, timestamp=datetime.utcnow())
+        emb = Embed(color=member.color, timestamp=datetime.utcnow())
         emb.set_author(name=f"User info - {member}")
         emb.set_thumbnail(url=member.avatar_url)
         emb.set_footer(
@@ -90,9 +89,7 @@ class Utils(commands.Cog):
     async def now(self, ctx):
         y = datetime.now()
         x = y.strftime("%H:%M:%S, %d/%m/%Y")
-        emb = discord.Embed(
-            title="Time now", description=x
-        )  # color=discord.Color.dark_red())
+        emb = Embed(title="Time now", description=x)
         emb.set_author(name=ctx.message.author.name, icon_url=ctx.author.avatar_url)
         await ctx.send(embed=emb)
 
@@ -114,7 +111,7 @@ class MyNewHelp(commands.MinimalHelpCommand):
     async def send_pages(self):
         destination = self.get_destination()
         for page in self.paginator.pages:
-            emb = discord.Embed(description=page)
+            emb = Embed(description=page)
             await destination.send(embed=emb)
 
 
@@ -127,7 +124,7 @@ class MyHelp(commands.HelpCommand):
         )
 
     async def send_bot_help(self, mapping):
-        embed = discord.Embed(title="Help", color=discord.Color.random())
+        embed = Embed(title="Help", color=Color.random())
         for cog, commands in mapping.items():
             filtered = await self.filter_commands(commands, sort=True)
             command_signatures = [self.get_command_signature(c) for c in filtered]

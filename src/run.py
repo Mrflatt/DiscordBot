@@ -1,5 +1,4 @@
 import os
-import sys
 from cogs import utils
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -23,7 +22,6 @@ if __name__ == "__main__":
         case_insensitive=True,
     )
     bot.cog_list = [
-        "cogs.default",
         "cogs.errors",
         "cogs.mod",
         "cogs.music",
@@ -44,5 +42,4 @@ if __name__ == "__main__":
     bot.help_command = utils.MyHelp()
     # bot.help_command = utils.MyNewHelp()
 
-
-bot.run(TOKEN)
+    bot.run(TOKEN)

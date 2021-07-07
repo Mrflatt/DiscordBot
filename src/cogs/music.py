@@ -3,12 +3,27 @@ import logging
 import math
 import discord
 import youtube_dl
+import os
+import toml
 from discord.ext import commands
-from musicbot import config
-from musicbot import video as vid
 
 
 FFMPEG_BEFORE_OPTS = "-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5"
+
+YTDL_OPTS = {
+    "default_search": "ytsearch",
+    "format": "bestaudio/best",
+    "quiet": True,
+    "extract_flat": "in_playlist",
+}
+
+EXAMPLE_CONFIG = """
+[music]
+# Options for the music commands
+"max_volume"=250 # Max audio volume. Set to -1 for unlimited.
+"vote_skip"=true # whether vote-skipping is enabled
+"vote_skip_ratio"=0.5 # the minimum ratio of votes needed to skip a song
+"""
 
 
 async def audio_playing(ctx):
@@ -38,7 +53,7 @@ async def in_voice_channel(ctx):
 
 async def is_audio_requester(ctx):
     """Checks that the command sender is the song requester."""
-    music = ctx.stonks.get_cog("Music")
+    music = ctx.bot.get_cog("Music")
     state = music.get_state(ctx.guild)
     permissions = ctx.channel.permissions_for(ctx.author)
     if permissions.administrator or state.is_requester(ctx.author):
@@ -221,7 +236,7 @@ class Music(commands.Cog):
 
         if client and client.channel:
             try:
-                video = vid.Video(url, ctx.author)
+                video = Video(url, ctx.author)
             except youtube_dl.DownloadError as e:
                 logging.warning(f"Error downloading video: {e}")
                 await ctx.send("There was an error downloading your video, sorry.")
@@ -233,7 +248,7 @@ class Music(commands.Cog):
             if ctx.author.voice is not None and ctx.author.voice.channel is not None:
                 channel = ctx.author.voice.channel
                 try:
-                    video = vid.Video(url, ctx.author)
+                    video = Video(url, ctx.author)
                 except youtube_dl.DownloadError as e:
                     await ctx.send("There was an error downloading your video, sorry.")
                     return
@@ -300,9 +315,62 @@ class Music(commands.Cog):
             await message.add_reaction(control)
 
 
+class Video:
+    """Class containing information about a particular video."""
+
+    def __init__(self, url_or_search, requested_by):
+        """Plays audio from (or searches for) a URL."""
+        with youtube_dl.YoutubeDL(YTDL_OPTS) as ydl:
+            video = self._get_info(url_or_search)
+            video_format = video["formats"][0]
+            self.stream_url = video_format["url"]
+            self.video_url = video["webpage_url"]
+            self.title = video["title"]
+            self.uploader = video["uploader"] if "uploader" in video else ""
+            self.thumbnail = video["thumbnail"] if "thumbnail" in video else None
+            self.requested_by = requested_by
+
+    def _get_info(self, video_url):
+        with youtube_dl.YoutubeDL(YTDL_OPTS) as ydl:
+            info = ydl.extract_info(video_url, download=False)
+            video = None
+            if "_type" in info and info["_type"] == "playlist":
+                return self._get_info(info["entries"][0]["url"])
+            else:
+                video = info
+            return video
+
+    def get_embed(self):
+        """Makes an embed out of this Video's information."""
+        embed = discord.Embed(
+            title=self.title, description=self.uploader, url=self.video_url
+        )
+        embed.set_footer(
+            text=f"Requested by {self.requested_by.name}",
+            icon_url=self.requested_by.avatar_url,
+        )
+        if self.thumbnail:
+            embed.set_thumbnail(url=self.thumbnail)
+        return embed
+
+
 def setup(bot):
-    cfg = config.load_config()
+    cfg = load_config()
     bot.add_cog(Music(bot, cfg))
+
+
+def load_config(path="./config.toml"):
+    """Loads the config from `path`"""
+    if os.path.exists(path) and os.path.isfile(path):
+        config = toml.load(path)
+        return config
+    else:
+        with open(path, "w") as config:
+            config.write(EXAMPLE_CONFIG)
+            logging.warning(
+                f"No config file found. Creating a default config file at {path}"
+            )
+        return load_config(path=path)
 
 
 class GuildState:
@@ -314,3 +382,7 @@ class GuildState:
 
     def is_requester(self, user):
         return self.now_playing.requested_by == user
+
+
+
+

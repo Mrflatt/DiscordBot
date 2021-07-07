@@ -1,5 +1,4 @@
 youtube-dl
-yfinance
 beautifulsoup4
 python-dotenv
 praw

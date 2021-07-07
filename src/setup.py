@@ -1,3 +1,3 @@
 from setuptools import setup, find_packages
 
-setup(name="musicbot", version="1.0", packages=find_packages())
+setup(name="utility", version="1.0", packages=find_packages())

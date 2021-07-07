@@ -31,8 +31,9 @@ jobs:
           black src/
           git config --global user.name github-actions
           git config --global user.email '${GITHUB_ACTOR}@github.com'
+          git pull origin HEAD:${{ github.head_ref }}
           git commit -am "Apply black codestyle" --allow-empty
-          git push origin HEAD:${{ github.head_ref }}
+          git push origin HEAD:${{ github.head_ref }} -f
 
   docker_image:
     name: Test build docker image
@@ -40,7 +41,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        
+
       - name: Docker Meta
         id: meta
         uses: docker/metadata-action@v3
